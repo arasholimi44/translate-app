@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 //import { getCurrentUser } from 'aws-amplify/auth';
 function Login({ onSignedIn }: { onSignedIn: () => void }) {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -87,7 +86,7 @@ function Login({ onSignedIn }: { onSignedIn: () => void }) {
 
       <div className="mt-6 text-center">
         <Link href="/register" className="text-blue-600 hover:underline">
-          Don't have an account? Register
+        {"Don't have an account? Register"}
         </Link>
       </div>
     </main>
