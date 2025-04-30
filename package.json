@@ -1,0 +1,30 @@
+{
+  "name": "project",
+  "scripts": {
+    "frontend:dev": "npm --workspace @sff/apps run dev",
+    "frontend:build": "npm --workspace @sff/apps run build",
+    "frontend:deploy": "npm run frontend:build && aws --endpoint-url=http://localhost:4566 s3 sync frontend/apps/dist s3://my-website-2025/",
+    "cdk:deploy": "cd infrastructure && cdklocal deploy -f --require-approval never",
+    "cdk:destroy": "cd infrastructure && cdklocal destroy -f --require-approval never",
+    "cdk:synth": "cd infrastructure && cdklocal synth -f --require-approval never",
+    "lambda-layer:build-utils": "npm run build --workspace=@sff/utils-lambda-layer",
+    "lambda-layer:watch-utils": "npm run watch --workspace=@sff/utils-lambda-layer"
+  },
+  "workspaces": [
+    "frontend/*",
+    "infrastructure",
+    "packages/**"
+  ],
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "@types/dotenv": "^8.2.3",
+    "aws-cdk-local": "^3.0.1",
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1692.0",
+    "esbuild": "^0.25.3",
+    "ngrok": "^5.0.0-beta.2"
+  }
+}
