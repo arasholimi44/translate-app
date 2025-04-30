@@ -117,7 +117,7 @@ export default function LoginPage() {
         const currUser = await getSession();
         console.log(currUser);
         setUser(currUser);
-      } catch (e) {
+      } catch {
         setUser(null);
       }
     }
