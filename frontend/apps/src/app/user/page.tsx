@@ -1,6 +1,5 @@
 "use client";
 import { getSession, signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 //import { getCurrentUser } from 'aws-amplify/auth';
