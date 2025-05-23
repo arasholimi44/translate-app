@@ -1,7 +1,6 @@
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthOptions, Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
-
 export const authConfig: NextAuthOptions = {
   session: {strategy: "jwt"},
   secret: process.env.NEXTAUTH_SECRET,
@@ -24,20 +23,31 @@ export const authConfig: NextAuthOptions = {
         const user = await res.json();
         if (user?.error) return null;
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          accessToken: user.accessToken // ← ADD THIS LINE TO RETURN TOKEN
+        };
       },
     }),
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.accessToken = user.accessToken;
+        token.sub = user.id;
+      }
+      return token;
+    },
     async session({
       session,
       token,
-    }: {
-      session: Session;
+    }: {session: Session;
       token: JWT;
     }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
+        session.accessToken = token.accessToken; 
       }
       return session;
     },

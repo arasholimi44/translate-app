@@ -24,9 +24,12 @@ export const createSuccessJsonResponse = (body: object) => createGatewayResponse
         body: JSON.stringify(body)
     });
 
- export const createErrorJsonResponse = (body: object) => createGatewayResponse({
-        statusCode: 500,
-        body: JSON.stringify(body)
-    });    
+    export const createErrorJsonResponse = (error: any) => createGatewayResponse({
+      statusCode: 500,
+      body: JSON.stringify({
+        error: error.message || "Unknown error",
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined
+      }),
+    });  
 
   

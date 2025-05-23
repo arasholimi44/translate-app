@@ -1,249 +1,91 @@
 "use client";
-// import {signUp, confirmSignUp, autoSignIn, SignUpOutput, SignInOutput} from "aws-amplify/auth";
 import Link from "next/link";
-import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { SubmitHandler, useForm } from "react-hook-form";
+import { IRegisterFormData } from "@/lib";
+import { useUSer } from "@/hooks";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 
-// type ISignUpState = SignUpOutput ["nextStep"];
-// type ISignInState = SignInOutput ['nextStep']
-
-// function RegistrationForm({onStepChange,}:
-//   {onStepChange: (step:ISignUpState) => void;}){
-//   const [email, setEmail] = useState<string>("");
-//   const [password, setPassword] = useState<string>("");
-//   const [password2, setPassword2] = useState<string>("");
-
-// return(
-//   <main className="flex flex-col m-8">
-//   <form className="flex flex-col space-y-4" onSubmit={async (event) => {
-//     event.preventDefault();
-//     try{
-//       if (password!==password2){throw new Error("password don't match")}
-
-//      const {nextStep} = await signUp({
-//         username:email,
-//         password: password,
-//         options: {
-//           userAttributes:{email},
-//           autoSignIn:true
-//         }
-//       });
-
-//      console.log( nextStep.signUpStep);
-//      onStepChange(nextStep);
-//     }catch(e){}
-//   }}>
-  
-//     <div>
-//       <label htmlFor="email">E-mail:</label>
-//       <input 
-//       id="email"
-//       type="email" 
-//       value= {email} 
-//       onChange={(e) => setEmail(e.target.value)} />
-//     </div>
-
-//      <div>
-//       <label htmlFor="password">Password:</label>
-//       <input 
-//        id="password"
-//        type="password" 
-//        value= {password} 
-//        onChange={(e) => setPassword(e.target.value)} />
-//        </div>
-
-//        <div>
-//       <label htmlFor="password2">Retype Password:</label>
-//       <input 
-//        id="password2"
-//        type="password2" 
-//        value= {password2} 
-//        onChange={(e) => setPassword2(e.target.value)} />
-//        </div> 
-
-//   <button className="btn bg-blue-500 p-2 mt-2 rounded-xl " type="submit"> 
-//     Register</button>
-
-//   </form>
-//   <Link className="hover:underline"  href="/user">Login</Link>
-//       </main>
-// )}
-
-// function ConfirmSignUp({onStepChange,}:
-//   {onStepChange: (step:ISignUpState) => void;}){
-//   const [verificationCode, setVerificationCode] = useState<string>("");
-//   const [email, setEmail] = useState<string>("");
-
-// return(
-
-//   <form className="flex flex-col space-y-4" onSubmit={async (event) => {
-//     event.preventDefault();
-//     try{
-//      const {nextStep} = await confirmSignUp({
-//         confirmationCode:verificationCode,
-//         username: email
-//       });
-
-//      console.log( nextStep.signUpStep);
-//      onStepChange(nextStep);
-//     }catch(e){}
-//   }}>
-  
-//     <div>
-//       <label htmlFor="email">E-mail:</label>
-//       <input 
-//       id="email"
-//       type="email" 
-//       value= {email} 
-//       onChange={(e) => setEmail(e.target.value)} />
-//     </div>
-
-//      <div>
-//       <label htmlFor="verificationCode">VerificationCode:</label>
-//       <input 
-//        id="verificationCode"
-//        type="text" 
-//        value= {verificationCode} 
-//        onChange={(e) => setVerificationCode(e.target.value)} />
-//        </div>
-
-//   <button className="btn bg-blue-500 p-2 mt-2 rounded-xl " type="submit"> 
-//     Verify</button>
-//   </form>
-      
-// )}
-
-// function AutoSignIn({onStepChange,}:
-//   {onStepChange: (step:ISignInState) => void;}) {
-//  useEffect (() =>{
-//   const asyncSignIn = async() =>{
-//   const {nextStep } = await autoSignIn();
-//   console.log(nextStep);
-//   onStepChange(nextStep);
-//  }
-//  autoSignIn
-// },[]);
-
-//   return<div>signing in...</div>
-// }
-
-// export default function Register() {
-// const router = useRouter()
-// const [step,setStep] = useState<ISignInState | ISignUpState | null>(null);
-//   useEffect(() =>{
-//   if (!step) return;
-//   if ((step as ISignInState).signInStep === "DONE"){
-//     router.push ("/")
-//   }
-//   }, 
-//   [step])
-
- 
-//  if (step) {
-//    if ((step as ISignUpState).signUpStep === "CONFIRM_SIGN_UP"){
-//     return <ConfirmSignUp onStepChange={setStep} />
-//    }
-
-//    if ((step as ISignUpState).signUpStep === "COMPLETE_AUTO_SIGN_IN"){
-//     return <AutoSignIn onStepChange={setStep}/>
-//    }
-
-//  }
-  
-
-
-//   return <RegistrationForm onStepChange={setStep}/>;
-// }
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      // 1️⃣ Register the user
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const { error: msg } = await res.json();
-        throw new Error(msg || 'Registration failed');
-      }
-
-      // 2️⃣ Auto‐login and redirect to `/`
-      await signIn('credentials', {
-        email,
-        password,
-        redirect: true,
-        callbackUrl: '/',
-      });
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Registration failed');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <main className="flex flex-col m-8">
-      <h1 className="text-2xl font-bold mb-4">Register</h1>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-
-      <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-        <div className="flex flex-col">
-          <label htmlFor="email" className="mb-1">Email:</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="p-2 border rounded"
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label htmlFor="password" className="mb-1">Password:</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            className="p-2 border rounded"
-          />
-        </div>
-
-        <button 
+    const {
+      register,
+      handleSubmit,
+      watch,
+      formState: { errors },
+    } = useForm<IRegisterFormData>();
+    
+   const {register: registerUser, busy} = useUSer();
+    const onSubmit: SubmitHandler<IRegisterFormData> = async (data,event) => {
+      event?.preventDefault();
+        await registerUser(data);
+    };
+  
+  
+    return (
+      <main className="flex flex-col m-8">
+        <h1 className="text-2xl font-bold mb-4">Register</h1>
+  
+        <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col">
+            <Label htmlFor="email" className="mb-1">Email:</Label>
+            <Input
+             disabled={busy}
+              id="email"
+              type="email"
+              {...register('email', { required: true })}
+             
+            />
+            {errors.email && <span className="text-red-500 text-sm">field is required</span>}
+          </div>
+  
+          <div className="flex flex-col">
+            <Label htmlFor="password" className="mb-1">Password:</Label>
+            <Input
+            disabled={busy}
+              id="password"
+              type="password"
+              {...register('password', {
+                required: true,
+                minLength: { value: 6, message: 'Min 6 characters' },
+              })}
+             
+            />
+            {errors.password && <span className="text-red-500 text-sm">field is required</span>}
+          </div>
+  
+          <div className="flex flex-col">
+            <Label htmlFor="password2" className="mb-1">Retype Password:</Label>
+            <Input
+             disabled={busy}
+             id="password2" 
+              type="password"
+              {...register('password2', {
+                required: true,
+                validate: (value) =>
+                  value === watch('password') || 'Passwords do not match',
+              })}
+              
+              
+            />
+        {errors.password && <span className="text-red-500 text-sm">field is required</span>}
+          </div>
+  
+          <Button 
           type="submit" 
-          disabled={loading}
-          className={`p-2 mt-2 rounded-xl ${
-            loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
-          } text-white`}
+          disabled={busy}
         >
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
+          {busy ? 'Registering...' : 'Register'}
+        </Button>
 
-      <Link href="/user" className="mt-4 text-blue-500 hover:underline">
-        Already have an account? Log in
+        </form>
+  
+        <Link href="/?login=true" className="mt-4 text-gray-500 hover:underline">
+     Already have an account? Log in
       </Link>
-    </main>
-  );
-}
+      
+      </main>
+    );
+  }

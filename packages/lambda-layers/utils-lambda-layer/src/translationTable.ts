@@ -6,14 +6,17 @@ import { ITranslateDbObject } from "@sff/shared-types";
 export class TranslationTable {
     tableName: string;
     partitionKey: string;
+    
     dynamodbClient: dynamodb.DynamoDBClient
 
     constructor({tableName,partitionKey }:{
         tableName: string,
         partitionKey: string,
+        
     }){
         this.tableName = tableName;
-        this.partitionKey;
+        this.partitionKey =partitionKey;
+        
         this.dynamodbClient = new dynamodb.DynamoDBClient({});
     }
 
@@ -26,6 +29,29 @@ export class TranslationTable {
 
           await this.dynamodbClient.send(new dynamodb.PutItemCommand(tableInsetCmd));
     }
+
+    async query({requestId}:{requestId: string}){
+
+        const queryCmd: dynamodb.QueryCommandInput = {
+            TableName: this.tableName,
+            KeyConditionExpression:"#PARTITION_KEY = :partitionValue",
+            ExpressionAttributeNames: {
+                "#PARTITION_KEY":this.partitionKey
+            },
+            ExpressionAttributeValues:{
+                ":partitionValue": {S: requestId}
+            },
+            ScanIndexForward: true,
+          };
+
+          const {Items}=await this.dynamodbClient.send(new dynamodb.QueryCommand(queryCmd));
+          if (!Items){
+            return[]
+          }
+          const rtnData = Items.map(item => unmarshall(item) as ITranslateDbObject);
+          return rtnData;   
+    }
+
 
     async getAll(){
 
@@ -40,6 +66,20 @@ export class TranslationTable {
 
         const rtnData = Items.map(item => unmarshall(item) as ITranslateDbObject);
         return rtnData;
+    }
+
+    async delete({requestId}:{ requestId: string}){
+
+        const deleteCmd: dynamodb.DeleteItemCommandInput = {
+            TableName: this.tableName,
+            Key:{
+                [this.partitionKey]: {S: requestId},
+                
+            }
+          };
+
+          await this.dynamodbClient.send(new dynamodb.DeleteItemCommand(deleteCmd));
+          return this.getAll();
     }
 
 }

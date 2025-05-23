@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db"; // Use consistent import path
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'; // ← ADD THIS IMPORT
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -37,11 +38,16 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.NEXTAUTH_SECRET!,
+      { expiresIn: '24h' }
+    );
     // Return user data (without password)
     return NextResponse.json({
       id: user.id,
-      email: user.email
+      email: user.email,
+      accessToken: token
     });
 
   } catch (error) {

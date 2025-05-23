@@ -9,6 +9,9 @@ export type ITranslateResponse = {
     targetText: string;
 };
 
-export type ITranslateDbObject = ITranslateRequest & ITranslateResponse & {
+export type ITranslatePrimaryKey ={
     requestId: string;
-};
+}
+
+export type ITranslateDbObject = ITranslateRequest & ITranslateResponse & ITranslatePrimaryKey;
+export type ITranslateResultList = Array<ITranslateDbObject>;

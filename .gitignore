@@ -8,9 +8,6 @@ node_modules/
 # Ignore infrastructure (backend/CDK)
 infrastructure/
 
-# Ignore lambda/layers code
-packages/lambdas/
-packages/lambda-layers/
 
 # Keep shared-types only
 # Don't ignore packages/shared-types/

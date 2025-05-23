@@ -24,7 +24,6 @@
     "aws-cdk-local": "^3.0.1",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1692.0",
-    "esbuild": "^0.25.3",
-    "ngrok": "^5.0.0-beta.2"
+    "esbuild": "^0.25.3"
   }
 }
