@@ -19,7 +19,7 @@ const AppContext = createContext<IAppContext>({
    setError: () => {},
    resetError: () => {},
    selectedTranslation: null,
-   setSelectedTranslation: (item:ITranslateDbObject) => {}
+   setSelectedTranslation: () => {}
   
  });
  function useInitialApp(): IAppContext {

@@ -26,22 +26,21 @@ const { setError, selectedTranslation } = useApp();
       if (translateError) {
         setError(translateError.message)
       }
-    }, [translateError])
+    }, [translateError, setError])
 
-    useEffect(()=>{
-      if(selectedTranslation){
-setValue("sourceLang", selectedTranslation.sourceLang);
-setValue("targetLang", selectedTranslation.targetLang);
-setValue("sourceText", selectedTranslation.sourceText);
+    useEffect(() => {
+      if (selectedTranslation) {
+        setValue("sourceLang", selectedTranslation.sourceLang);
+        setValue("targetLang", selectedTranslation.targetLang);
+        setValue("sourceText", selectedTranslation.sourceText);
       }
-    },[selectedTranslation]
-    )
+    }, [selectedTranslation, setValue])
 
     const onSubmit: SubmitHandler<ITranslateRequest> = (data, event) => {
       if (event) event.preventDefault();
         console.log("call on translate")
         translate(data, {
-          onError: (error) => {
+          onError: () => {
             // This will be caught by the useEffect above
           }
         })

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react"
-import {Avatar,AvatarFallback, AvatarImage,} from "@/components/ui/avatar"
+import {Avatar, AvatarImage,} from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {DropdownMenu,DropdownMenuContent,DropdownMenuGroup,DropdownMenuItem,DropdownMenuLabel,
 DropdownMenuSeparator, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
@@ -11,11 +11,10 @@ import { LoginForm } from "./LoginForm";
 
 
   
-  export function  UserNav ({ forceOpen = false }: { forceOpen?: boolean })  {
+  export function  UserNav ()  {
     const {user, logout} = useUSer();
     const router = useRouter()
     const searchParams = useSearchParams();
-    const loginParam = searchParams.get("login");
   
     const [open, setOpen] = useState(false);
   

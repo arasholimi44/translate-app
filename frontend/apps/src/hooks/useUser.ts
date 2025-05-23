@@ -16,17 +16,17 @@ export const useUSer = () => {
     } catch {
       setUser(null);
     }
-  }, [setUser]);
+  }, [setUser]); 
 
   useEffect(() => {
-    async function fetchUser() {
+    const fetchUser = async () => {
       setBusy(true);
       await getUser();
       setBusy(false);
-    }
+    };
 
     fetchUser();
-  }, [getUser]);
+  }, [getUser]); 
 
   const login = useCallback(
     async ({ email, password }: ILoginFormData) => {

@@ -20,7 +20,9 @@ export const LoginForm = ({ onSignedIn }: { onSignedIn?: () => void }) => {
   const onSubmit: SubmitHandler<ILoginFormData> = async (data, event) => {
     event?.preventDefault();
     login(data).then(() =>{ // 👈 custom hook
-    onSignedIn && onSignedIn();      // 👈 now only called on successful login
+      if (onSignedIn) {
+        onSignedIn();
+      }      // 👈 now only called on successful login
     })
   };
 

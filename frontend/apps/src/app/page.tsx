@@ -17,10 +17,6 @@ export default function Home() {
   const {selectedTranslation,setSelectedTranslation}= useApp()
   const leftPanelRef = createRef<ImperativePanelHandle>();
 
-if (isLoading) {
-    return <LoadingPage />;
- }
- 
   useEffect(() => { 
     if (!leftPanelRef.current){
       return
@@ -31,11 +27,13 @@ if (user){
 } else{
   leftPanelRef.current?.collapse()
 }
-  },[user]
+  },[user, leftPanelRef]
 
 )
  
- 
+ if (isLoading) {
+    return <LoadingPage />;
+ }
 
   return (
     <main className="flex flex-col h-screen">
