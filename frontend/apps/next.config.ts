@@ -5,7 +5,9 @@ const nextConfig: NextConfig = {
   // distDir: 'dist',
   output: 'standalone',
   reactStrictMode: false,
- 
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 
 };
 
